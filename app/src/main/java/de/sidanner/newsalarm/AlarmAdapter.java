@@ -78,7 +78,7 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
                 public void onClick(View v) {
                     Alarm alarm = alarmList.get(position);
                     alarm.cancel();
-                    alarmList.remove(position);
+                    remove(alarm);
                     notifyDataSetChanged();
                 }
             });
@@ -89,6 +89,17 @@ public class AlarmAdapter extends ArrayAdapter<Alarm> {
 
         }
         return vi;
+    }
+
+    @Override
+    public void remove(Alarm alarm) {
+        alarmList.remove(alarm);
+
+        for (int i = 0; i < alarmList.size(); i++) {
+            Alarm toRefresh = alarmList.get(i);
+            toRefresh.setActive();
+        }
+
     }
 
     public static class ViewHolder {

@@ -17,11 +17,14 @@ public class Alarm {
     public Calendar timeToRing;
 
     private AlarmManager alarmMgr;
-    private PendingIntent pendingIntent;
+
+    private Context context;
 
 
     public Alarm(Context context, boolean repeating, int hour, int minute) {
-        isRepeating = true;
+        this.context = context;
+
+        isRepeating = repeating;
 
         timeToRing = Calendar.getInstance();
 
@@ -31,32 +34,58 @@ public class Alarm {
 
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 
+        setActive();
 
+    }
+
+    public Alarm(Context context, Calendar time, boolean repeating) {
+        this.context = context;
+        timeToRing = time;
+        isRepeating = repeating;
+
+        alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        setActive();
+    }
+
+    public void cancel() {
+        PendingIntent intent = makePendingIntent(getIntent());
+        alarmMgr.cancel(intent);
+    }
+
+    private Intent getIntent() {
+        Intent intent = new Intent(context, AlarmReceiver.class);
+        intent.setAction("de.sidanner.newsalarm.alarms");
+        return intent;
+    }
+
+
+    private PendingIntent makePendingIntent(Intent intent) {
+        return PendingIntent.getBroadcast(context, 0, intent, 0);
+    }
+
+
+    public void setActive() {
         ArrayList<Podcast> podcasts = new ArrayList<>();
         podcasts.add(new Podcast());
 
         AlarmSettings alarmExecution = new AlarmSettings(podcasts);
 
-        Intent intent = new Intent(context, AlarmReceiver.class);
-        intent.setAction("de.sidanner.newsalarm.alarms");
+        Intent intent = getIntent();
         intent.putExtra("alarmSettings", alarmExecution);
 
-        pendingIntent = PendingIntent.getBroadcast(context, 0, intent, 0);
+        PendingIntent pendingIntent = makePendingIntent(intent);
 
 
-        if (repeating) {
+        sendToAlarmManager(pendingIntent);
+    }
+
+    public void sendToAlarmManager(PendingIntent pendingIntent) {
+        if (isRepeating) {
             alarmMgr.setRepeating(AlarmManager.RTC_WAKEUP, timeToRing.getTimeInMillis(), AlarmManager.INTERVAL_DAY, pendingIntent);
         } else {
             alarmMgr.set(AlarmManager.RTC_WAKEUP, timeToRing.getTimeInMillis(), pendingIntent);
         }
     }
-
-    public void cancel() {
-        alarmMgr.cancel(pendingIntent);
-        pendingIntent.cancel();
-    }
-
-
 }
 
 
