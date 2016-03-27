@@ -28,6 +28,12 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name="AlarmPlayerService"
+            android:enabled="true">
+
+        </service>
+
     </application>
 
 </manifest>
