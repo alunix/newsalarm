@@ -12,19 +12,17 @@
     tools:context="de.sidanner.newsalarm.AlarmActivity"
     tools:showIn="@layout/activity_alarm">
 
-    <TextView
-        android:id="@+id/addNewAlarmsTxt"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/addAlarmsText"
-        android:visibility="visible" />
-
     <ListView
         android:id="@android:id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="@dimen/activity_vertical_margin">
+        android:layout_marginTop="@dimen/activity_vertical_margin"></ListView>
 
-    </ListView>
+    <TextView
+        android:id="@android:id/empty"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="Click add to setup an alarm"
+        android:textSize="18sp" />
 
 </RelativeLayout>

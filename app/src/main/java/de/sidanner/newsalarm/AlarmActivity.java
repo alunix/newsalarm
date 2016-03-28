@@ -10,7 +10,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.TextView;
 import android.widget.TimePicker;
 
 import java.io.BufferedReader;
@@ -45,12 +44,10 @@ public class AlarmActivity extends ListActivity implements TimePickerDialog.OnTi
         setListAdapter(adapter);
 
 
+
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TextView addAlarmText = (TextView) findViewById(R.id.addNewAlarmsTxt);
-                addAlarmText.setVisibility(View.INVISIBLE);
-
                 showTimePickerDialog(v);
 
             }
@@ -122,9 +119,12 @@ public class AlarmActivity extends ListActivity implements TimePickerDialog.OnTi
             Calendar time = Calendar.getInstance();
             time.setTimeInMillis(Long.parseLong(alarmValues[1]));
 
-            Alarm al = new Alarm(this, time, repeating);
+            boolean isEnabled = Boolean.parseBoolean(alarmValues[2]);
+
+            Alarm al = new Alarm(this, time, repeating, isEnabled);
             listItems.add(al);
         }
+        adapter.notifyDataSetChanged();
 
     }
 
@@ -145,6 +145,8 @@ public class AlarmActivity extends ListActivity implements TimePickerDialog.OnTi
                 save.append(toWrite.isRepeating);
                 save.append("|");
                 save.append(toWrite.timeToRing.getTimeInMillis());
+                save.append("|");
+                save.append(toWrite.isEnabled);
                 save.append("\n");
             }
             Log.d("bla", "writing to file: " + save.toString());

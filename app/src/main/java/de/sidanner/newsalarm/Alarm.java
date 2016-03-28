@@ -14,6 +14,8 @@ import java.util.Calendar;
 public class Alarm {
     public boolean isRepeating;
 
+    public boolean isEnabled;
+
     public Calendar timeToRing;
 
     private AlarmManager alarmMgr;
@@ -26,6 +28,8 @@ public class Alarm {
 
         isRepeating = repeating;
 
+        isEnabled = true;
+
         timeToRing = Calendar.getInstance();
 
         timeToRing.set(Calendar.HOUR_OF_DAY, hour);
@@ -36,12 +40,18 @@ public class Alarm {
 
         setActive();
 
+
     }
 
-    public Alarm(Context context, Calendar time, boolean repeating) {
+    public Alarm(Context context, Calendar time, boolean repeating, boolean isEnabled) {
         this.context = context;
         timeToRing = time;
         isRepeating = repeating;
+        this.isEnabled = isEnabled;
+
+        if (timeToRing.before(Calendar.getInstance())) {
+            timeToRing.add(Calendar.DAY_OF_YEAR, 1);
+        }
 
         alarmMgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         setActive();
@@ -65,6 +75,9 @@ public class Alarm {
 
 
     public void setActive() {
+        if (!isEnabled) {
+            return;
+        }
         ArrayList<Podcast> podcasts = new ArrayList<>();
         podcasts.add(new Podcast());
 
