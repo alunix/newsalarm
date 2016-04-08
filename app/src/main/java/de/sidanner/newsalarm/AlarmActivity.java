@@ -2,9 +2,9 @@ package de.sidanner.newsalarm;
 
 import android.app.ListActivity;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,19 +33,14 @@ public class AlarmActivity extends ListActivity implements TimePickerDialog.OnTi
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.addAlarmFAB);
 
         adapter = new AlarmAdapter(this,
                 android.R.layout.simple_list_item_1,
                 listItems);
-
         setListAdapter(adapter);
 
-
-
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton addAlarmButton = (FloatingActionButton) findViewById(R.id.addAlarmFAB);
+        addAlarmButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showTimePickerDialog(v);
@@ -53,6 +48,21 @@ public class AlarmActivity extends ListActivity implements TimePickerDialog.OnTi
             }
         });
 
+        FloatingActionButton stopRunningAlarmButton = (FloatingActionButton) findViewById(R.id.stopAlarmFAB);
+        stopRunningAlarmButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                stopPendingAlarm(v);
+            }
+        });
+
+    }
+
+    private void stopPendingAlarm(View v) {
+        Intent intent = new Intent(v.getContext(), AlarmReceiver.class);
+        intent.setAction("stopAlarm");
+        sendBroadcast(intent);
     }
 
     public void showTimePickerDialog(View v) {

@@ -84,6 +84,7 @@ public class Alarm {
         AlarmSettings alarmExecution = new AlarmSettings(podcasts);
 
         Intent intent = getIntent();
+        intent.setAction("ringAlarm");
         intent.putExtra("alarmSettings", alarmExecution);
 
         PendingIntent pendingIntent = makePendingIntent(intent);

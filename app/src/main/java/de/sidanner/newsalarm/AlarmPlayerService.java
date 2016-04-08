@@ -32,10 +32,18 @@ public class AlarmPlayerService extends Service implements OnTaskCompleted, Medi
     }
 
     private void handleCommand(Intent intent) {
-        AlarmSettings alarms = intent.getParcelableExtra("alarmSettings");
 
-        Podcast podcast = alarms.toListen.get(0);
-        podcast.getLastNews(this);
+        String action = intent.getAction();
+
+        if (action == "stopAlarm") {
+            if (mPlayer.isPlaying()) {
+                mPlayer.stop();
+            }
+        } else {
+            AlarmSettings alarms = intent.getParcelableExtra("alarmSettings");
+            Podcast podcast = alarms.toListen.get(0);
+            podcast.getLastNews(this);
+        }
     }
 
     @Override
